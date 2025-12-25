@@ -36,7 +36,7 @@ const ManageCampaigns = () => {
 
   const handleViewImages = async (campaignId) => {
     try {
-      console.log('Fetching images for campaign:', campaignId);
+
       const response = await axios.get(
         `${import.meta.env.VITE_API_URL}/admin/campaign-images/${campaignId}`,
         {
@@ -59,13 +59,13 @@ const ManageCampaigns = () => {
         return;
       }
       
-      console.log('Setting campaign images:', images.length, 'images');
+
       if (images.length > 0) {
-        console.log('Sample image structure:', JSON.stringify(images[0], null, 2));
+
       } else {
-        console.log('No images found in response');
+
       }
-      console.log('Sample image structure:', images[0]);
+
       setCampaignImages(images);
       setShowGallery(true);
     } catch (err) {

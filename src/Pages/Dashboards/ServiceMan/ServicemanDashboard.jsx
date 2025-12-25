@@ -44,7 +44,7 @@ export default function ServiceManDashboard() {
       setLoading(true);
       try {
         const url = `${import.meta.env.VITE_API_URL_GET_CAMPAIGN_BY_SERVICE_MAN}/${encodeURIComponent(user.email)}`;
-        console.log('Fetching campaigns from:', url);
+
         const res = await fetch(url, {
           headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
         });
@@ -52,9 +52,9 @@ export default function ServiceManDashboard() {
         const data = await res.json();
         if (data.data && Array.isArray(data.data)) {
           setCampaigns(data.data);
-          console.log('Campaigns loaded:', data.data);
+
         } else {
-          console.log('No campaigns found in response:', data);
+
           setCampaigns([]);
         }
       } catch (err) {
@@ -77,7 +77,7 @@ export default function ServiceManDashboard() {
       setLoadingReports(true);
       try {
         const url = `${import.meta.env.VITE_API_URL_GET_UPLOADS}?email=${encodeURIComponent(user.email)}`;
-        console.log('Fetching uploads from:', url);
+
         const res = await fetch(url, {
           headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
         });
@@ -87,12 +87,12 @@ export default function ServiceManDashboard() {
           throw new Error(errorText);
         }
         const data = await res.json();
-        console.log('Uploads response:', data);
+
         if (data.data && Array.isArray(data.data)) {
           setUploadedReports(data.data);
-          console.log('Uploads loaded:', data.data);
+
         } else {
-          console.log('No uploads found in response:', data);
+
           setUploadedReports([]);
         }
       } catch (err) {
@@ -244,7 +244,7 @@ export default function ServiceManDashboard() {
       const response = await axios.delete(`${import.meta.env.VITE_API_URL_DELETE_UPLOAD}/${reportId}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      console.log('Delete response:', response);
+
       // Refresh the uploads list
       const url = `${import.meta.env.VITE_API_URL_GET_UPLOADS}?email=${encodeURIComponent(user.email)}`;
       const res = await fetch(url, {

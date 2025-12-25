@@ -47,7 +47,7 @@ const VerifiedCampaigns = () => {
           }
         );
 
-        console.log("Verified campaigns response:", response.data);
+
         setVerifiedCampaigns(Array.isArray(response.data) ? response.data : []);
         setFilteredCampaigns(Array.isArray(response.data) ? response.data : []);
       } catch (error) {

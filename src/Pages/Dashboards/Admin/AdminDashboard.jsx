@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Menu } from "lucide-react";
+import LoadingSpinner from "../../../Components/LoadingSpinner";
 import Sidebar from "../../../Components/Sidebar";
 import axios from "axios";
 import {
@@ -191,9 +192,8 @@ const AdminDashboard = () => {
           <h1 className="text-3xl font-bold mb-6 text-gray-800 hidden md:block">Admin Dashboard</h1>
 
           {loading ? (
-            <div className="text-center py-10">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto"></div>
-              <p className="mt-4 text-gray-600">Loading dashboard data...</p>
+            <div className="flex items-center justify-center h-64">
+              <LoadingSpinner size="lg" />
             </div>
           ) : (
             <>

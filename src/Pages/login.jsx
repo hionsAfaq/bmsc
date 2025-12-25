@@ -25,10 +25,8 @@ const LoginPage = () => {
     setError("");
 
     try {
-      console.log("Attempting login with:", {
-        url: import.meta.env.VITE_API_URL_LOGIN,
-        email: formData.email
-      });
+
+
 
       const response = await axios.post(
         import.meta.env.VITE_API_URL_LOGIN,

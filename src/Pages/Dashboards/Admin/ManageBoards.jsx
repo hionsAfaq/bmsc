@@ -4,6 +4,7 @@ import { Menu, Pencil, Trash2 } from "lucide-react";
 import Sidebar from "../../../Components/Sidebar";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import LoadingSpinner from "../../../Components/LoadingSpinner";
 
 // Predefined list of Pakistani cities for selection
 const CITY_OPTIONS = [
@@ -308,245 +309,251 @@ const ManageBoards = () => {
           </button>
         </div>
 
-        <div className="p-6">
-          <div className="flex justify-between items-center mb-4 flex-wrap gap-4">
-            <h2 className="text-2xl font-bold text-blue-600">Boards</h2>
-            <button
-              onClick={() => {
-                setIsEditing(false);
-                setFormData({
-                  BoardNo: "",
-                  Type: "backlit",
-                  Location: "",
-                  City: "",
-                  Latitude: "",
-                  Longitude: "",
-                  Height: "",
-                  Width: "",
-                  Quantity: "",
-                });
-                toggleDialog();
-                getGeoLocation(); // ⬅️ trigger geo auto-fill
-              }}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-            >
-              Add Board
-            </button>
+        {loading ? (
+          <div className="flex items-center justify-center h-full">
+            <LoadingSpinner size="lg" />
           </div>
+        ) : (
+          <div className="p-6">
+            <div className="flex justify-between items-center mb-4 flex-wrap gap-4">
+              <h2 className="text-2xl font-bold text-blue-600">Boards</h2>
+              <button
+                onClick={() => {
+                  setIsEditing(false);
+                  setFormData({
+                    BoardNo: "",
+                    Type: "backlit",
+                    Location: "",
+                    City: "",
+                    Latitude: "",
+                    Longitude: "",
+                    Height: "",
+                    Width: "",
+                    Quantity: "",
+                  });
+                  toggleDialog();
+                  getGeoLocation(); // ⬅️ trigger geo auto-fill
+                }}
+                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+              >
+                Add Board
+              </button>
+            </div>
 
-          {showDialog && (
-            <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
-              <div className="bg-white rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto overflow-x-auto p-6">
-                <h3 className="text-xl font-semibold text-blue-600 mb-4">
-                  {isEditing ? "Edit Board" : "Add New Board"}
-                </h3>
-                <form
-                  onSubmit={handleSubmit}
-                  className="space-y-3 min-w-[300px]"
-                >
-                  {[
-                    "BoardNo",
-                    "Type",
-                    "Location",
-                    "City",
-                    "Latitude",
-                    "Longitude",
-                    "Height",
-                    "Width",
-                  ].map((field) => (
-                    <div key={field}>
-                      <label className="block text-sm font-medium mb-1">
-                        {field === "BoardNo" ? "Board" : field}
-                      </label>
-                      {field === "Type" ? (
-                        <select
-                          name={field}
-                          value={formData[field]}
-                          onChange={handleChange}
-                          className="w-full p-2 border rounded"
-                          required
-                        >
-                          <option value="backlit">Backlit</option>
-                          <option value="frontlit">Frontlit</option>
-                          <option value="creative">Creative</option>
-                          <option value="digital stream">Digital Stream</option>
-                          <option value="screen digital">Screen Digital</option>
-                          <option value="mall digital screen">Mall Digital Screen</option>
-                        </select>
-                      ) : field === "City" ? (
-                        <select
-                          name={field}
-                          value={formData[field]}
-                          onChange={handleChange}
-                          className="w-full p-2 border rounded"
-                          required
-                        >
-                          <option value="">Select a city</option>
-                          {CITY_OPTIONS.map((c) => (
-                            <option key={c} value={c}>
-                              {c}
-                            </option>
-                          ))}
-                        </select>
-                      ) : (
+            {showDialog && (
+              <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50 px-4">
+                <div className="bg-white rounded-lg shadow-lg w-full max-w-md max-h-[90vh] overflow-y-auto overflow-x-auto p-6">
+                  <h3 className="text-xl font-semibold text-blue-600 mb-4">
+                    {isEditing ? "Edit Board" : "Add New Board"}
+                  </h3>
+                  <form
+                    onSubmit={handleSubmit}
+                    className="space-y-3 min-w-[300px]"
+                  >
+                    {[
+                      "BoardNo",
+                      "Type",
+                      "Location",
+                      "City",
+                      "Latitude",
+                      "Longitude",
+                      "Height",
+                      "Width",
+                    ].map((field) => (
+                      <div key={field}>
+                        <label className="block text-sm font-medium mb-1">
+                          {field === "BoardNo" ? "Board" : field}
+                        </label>
+                        {field === "Type" ? (
+                          <select
+                            name={field}
+                            value={formData[field]}
+                            onChange={handleChange}
+                            className="w-full p-2 border rounded"
+                            required
+                          >
+                            <option value="backlit">Backlit</option>
+                            <option value="frontlit">Frontlit</option>
+                            <option value="creative">Creative</option>
+                            <option value="digital stream">Digital Stream</option>
+                            <option value="screen digital">Screen Digital</option>
+                            <option value="mall digital screen">Mall Digital Screen</option>
+                          </select>
+                        ) : field === "City" ? (
+                          <select
+                            name={field}
+                            value={formData[field]}
+                            onChange={handleChange}
+                            className="w-full p-2 border rounded"
+                            required
+                          >
+                            <option value="">Select a city</option>
+                            {CITY_OPTIONS.map((c) => (
+                              <option key={c} value={c}>
+                                {c}
+                              </option>
+                            ))}
+                          </select>
+                        ) : (
+                          <input
+                            type={
+                              [
+                                "Latitude",
+                                "Longitude",
+                                "Height",
+                                "Width",
+                              ].includes(field)
+                                ? "number"
+                                : "text"
+                            }
+                            step="any"
+                            name={field}
+                            value={formData[field]}
+                            onChange={handleChange}
+                            className="w-full p-2 border rounded"
+                            required
+                          />
+                        )}
+                      </div>
+                    ))}
+                    
+                    {/* Conditional Quantity Field - only for digital board types */}
+                    {['creative', 'digital stream', 'screen digital', 'mall digital screen'].includes(formData.Type) && (
+                      <div>
+                        <label className="block text-sm font-medium mb-1">
+                          Quantity
+                        </label>
                         <input
-                          type={
-                            [
-                              "Latitude",
-                              "Longitude",
-                              "Height",
-                              "Width",
-                            ].includes(field)
-                              ? "number"
-                              : "text"
-                          }
-                          step="any"
-                          name={field}
-                          value={formData[field]}
+                          type="number"
+                          name="Quantity"
+                          value={formData.Quantity}
                           onChange={handleChange}
                           className="w-full p-2 border rounded"
+                          min="1"
                           required
                         />
-                      )}
-                    </div>
-                  ))}
-                  
-                  {/* Conditional Quantity Field - only for digital board types */}
-                  {['creative', 'digital stream', 'screen digital', 'mall digital screen'].includes(formData.Type) && (
-                    <div>
-                      <label className="block text-sm font-medium mb-1">
-                        Quantity
-                      </label>
-                      <input
-                        type="number"
-                        name="Quantity"
-                        value={formData.Quantity}
-                        onChange={handleChange}
-                        className="w-full p-2 border rounded"
-                        min="1"
-                        required
-                      />
-                    </div>
-                  )}
-                  <div className="flex justify-end gap-3 pt-4">
-                    <button
-                      type="button"
-                      onClick={toggleDialog}
-                      className="px-4 py-2 border border-gray-400 rounded hover:bg-gray-100"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      type="submit"
-                      className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                    >
-                      {isEditing ? "Update" : "Save"}
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          )}
-
-          <div className="mt-8">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-xl font-semibold text-blue-600">
-                All Boards
-              </h3>
-              <div className="flex items-center gap-2">
-                <label className="text-sm text-gray-600">Filter by City:</label>
-                <select
-                  value={selectedCity}
-                  onChange={(e) => setSelectedCity(e.target.value)}
-                  className="p-2 border rounded"
-                >
-                  <option value="">All Cities</option>
-                  {CITY_OPTIONS.map((city) => (
-                    <option key={city} value={city}>
-                      {city}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            {boards.length === 0 ? (
-              <p className="text-gray-500">No boards found.</p>
-            ) : (
-              <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
-                {boards
-                  .filter(board => !selectedCity || board.City === selectedCity)
-                  .map((board) => (
-                  <div
-                    key={board._id}
-                    className="bg-white p-4 rounded shadow border hover:shadow-lg transition relative"
-                  >
-                    <div className="absolute top-2 right-2 flex gap-2">
-                      <button
-                        onClick={() => handleEdit(board)}
-                        className="text-blue-500 hover:text-blue-700"
-                      >
-                        <Pencil size={16} />
-                      </button>
-                      <button
-                        onClick={() => handleDelete(board._id)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <Trash2 size={16} />
-                      </button>
-                    </div>
-                    <div className="flex justify-between items-start mb-2">
-                      <h4 className="font-bold text-blue-600">
-                        {board.Type.toUpperCase()}
-                      </h4>
-                      <span
-                        className={`text-xs px-2 py-1 my-3 rounded-full ${
-                          board.isUsed
-                            ? 'bg-red-100 text-red-700 border border-red-300'
-                            : 'bg-green-100 text-green-700 border border-green-300'
-                        }`}
-                      >
-                        {board.isUsed ? 'In Campaign' : 'Available'}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-700">
-                      <strong>Board:</strong> {board.BoardNo}
-                    </p>
-                    <p className="text-sm text-gray-700">
-                      <strong>Location:</strong> {board.Location}
-                    </p>
-                    <p className="text-sm text-gray-700">
-                      <strong>City:</strong> {board.City || "N/A"}
-                    </p>
-                    <p className="text-sm text-gray-700">
-                      <strong>Lat/Lon:</strong> {board.Latitude}, {board.Longitude}
-                    </p>
-                    
-                    <p className="text-sm text-gray-700">
-                      <strong>Size:</strong> {board.Width}ft x {board.Height}ft
-                    </p>
-                    {board.Quantity && (
-                      <p className="text-sm font-medium text-blue-700 mt-1">
-                        <strong>Quantity:</strong> {board.Quantity}
-                      </p>
+                      </div>
                     )}
-                    <button
-                      className="mt-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
-                      onClick={() => {
-                        const url = `https://www.google.com/maps?q=${board.Latitude},${board.Longitude}`;
-                        window.open(url, '_blank');
-                      }}
-                    >
-                      View on Map
-                    </button>
-                    <p className="text-xs text-gray-500 mt-2">
-                      Created: {new Date(board.CreatedAt).toLocaleString()}
-                    </p>
-                  </div>
-                ))}
+                    <div className="flex justify-end gap-3 pt-4">
+                      <button
+                        type="button"
+                        onClick={toggleDialog}
+                        className="px-4 py-2 border border-gray-400 rounded hover:bg-gray-100"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        type="submit"
+                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                      >
+                        {isEditing ? "Update" : "Save"}
+                      </button>
+                    </div>
+                  </form>
+                </div>
               </div>
             )}
+
+            <div className="mt-8">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-semibold text-blue-600">
+                  All Boards
+                </h3>
+                <div className="flex items-center gap-2">
+                  <label className="text-sm text-gray-600">Filter by City:</label>
+                  <select
+                    value={selectedCity}
+                    onChange={(e) => setSelectedCity(e.target.value)}
+                    className="p-2 border rounded"
+                  >
+                    <option value="">All Cities</option>
+                    {CITY_OPTIONS.map((city) => (
+                      <option key={city} value={city}>
+                        {city}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              {boards.length === 0 ? (
+                <p className="text-gray-500">No boards found.</p>
+              ) : (
+                <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+                  {boards
+                    .filter(board => !selectedCity || board.City === selectedCity)
+                    .map((board) => (
+                    <div
+                      key={board._id}
+                      className="bg-white p-4 rounded shadow border hover:shadow-lg transition relative"
+                    >
+                      <div className="absolute top-2 right-2 flex gap-2">
+                        <button
+                          onClick={() => handleEdit(board)}
+                          className="text-blue-500 hover:text-blue-700"
+                        >
+                          <Pencil size={16} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(board._id)}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                      <div className="flex justify-between items-start mb-2">
+                        <h4 className="font-bold text-blue-600">
+                          {board.Type.toUpperCase()}
+                        </h4>
+                        <span
+                          className={`text-xs px-2 py-1 my-3 rounded-full ${
+                            board.isUsed
+                              ? 'bg-red-100 text-red-700 border border-red-300'
+                              : 'bg-green-100 text-green-700 border border-green-300'
+                          }`}
+                        >
+                          {board.isUsed ? 'In Campaign' : 'Available'}
+                        </span>
+                      </div>
+                      <p className="text-sm text-gray-700">
+                        <strong>Board:</strong> {board.BoardNo}
+                      </p>
+                      <p className="text-sm text-gray-700">
+                        <strong>Location:</strong> {board.Location}
+                      </p>
+                      <p className="text-sm text-gray-700">
+                        <strong>City:</strong> {board.City || "N/A"}
+                      </p>
+                      <p className="text-sm text-gray-700">
+                        <strong>Lat/Lon:</strong> {board.Latitude}, {board.Longitude}
+                      </p>
+                      
+                      <p className="text-sm text-gray-700">
+                        <strong>Size:</strong> {board.Width}ft x {board.Height}ft
+                      </p>
+                      {board.Quantity && (
+                        <p className="text-sm font-medium text-blue-700 mt-1">
+                          <strong>Quantity:</strong> {board.Quantity}
+                        </p>
+                      )}
+                      <button
+                        className="mt-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
+                        onClick={() => {
+                          const url = `https://www.google.com/maps?q=${board.Latitude},${board.Longitude}`;
+                          window.open(url, '_blank');
+                        }}
+                      >
+                        View on Map
+                      </button>
+                      <p className="text-xs text-gray-500 mt-2">
+                        Created: {new Date(board.CreatedAt).toLocaleString()}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

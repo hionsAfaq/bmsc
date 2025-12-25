@@ -11,7 +11,7 @@ const Footer = () => {
           <h2 className="text-2xl font-bold mb-4">CampaignSoft</h2>
           <p className="text-sm">
             A complete campaign management solution to simplify campaign tracking,
-            location coordination, and billing — all in one dashboard.
+            location coordination, and tracking of staff & clients — all in one dashboard.
           </p>
         </div>
 

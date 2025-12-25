@@ -41,11 +41,33 @@ const LandingPage = () => {
               </div>
               <div className="p-6 border rounded-lg shadow-sm bg-white hover:shadow-lg transition">
                 <h3 className="text-xl font-semibold mb-2 text-indigo-700">
-                  Invoice Tracking
+                  Tracker Tracking
                 </h3>
                 <p className="text-sm text-gray-600">
-                  Track all billing activities with real-time invoice
-                  generation.
+                  Track all trackers and service mens activities with real-time location tracking.
+                </p>
+              </div>
+              <div className="p-6 border rounded-lg shadow-sm bg-white hover:shadow-lg transition">
+                <h3 className="text-xl font-semibold mb-2 text-indigo-700">
+                  Staff Tracking
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Track all staff activities.
+                </p>
+              </div>
+              <div className="p-6 border rounded-lg shadow-sm bg-white hover:shadow-lg transition">
+                <h3 className="text-xl font-semibold mb-2 text-indigo-700">
+                  Client Tracking
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Track all Clients and sent them their campaign Reports.
+                </p>
+              </div>
+              <div className="p-6 border rounded-lg shadow-sm bg-white hover:shadow-lg transition">
+                <h3 className="text-xl font-semibold mb-2 text-indigo-700">
+                  Boards Management                </h3>
+                <p className="text-sm text-gray-600">
+                  Manage boards with their different types with real time location.
                 </p>
               </div>
               <div className="p-6 border rounded-lg shadow-sm bg-white hover:shadow-lg transition">

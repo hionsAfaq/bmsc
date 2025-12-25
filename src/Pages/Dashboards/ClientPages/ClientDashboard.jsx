@@ -21,7 +21,7 @@ const ClientDashboard = () => {
 
       setLoading(true);
       try {
-        console.log('Fetching campaigns for client:', user.email);
+
         const response = await axios.get(
           `${import.meta.env.VITE_API_URL_CLIENT_CAMPAIGNS}/${encodeURIComponent(user.email)}`,
           {
@@ -32,9 +32,9 @@ const ClientDashboard = () => {
           }
         );
 
-        console.log('Campaign response:', response.data);
+
         const campaignsData = response.data?.data || [];
-        console.log('Processed campaigns:', campaignsData);
+
         setCampaigns(campaignsData);
       } catch (error) {
         console.error("Error fetching campaigns:", error);

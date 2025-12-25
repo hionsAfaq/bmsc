@@ -114,7 +114,7 @@ const ManageCampaigns = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        console.log('Fetching campaigns, boards, and users data...');
+
         const [campaignRes, boardsRes, usersRes] = await Promise.all([
           axios.get(import.meta.env.VITE_API_URL_GET_ALL_CAMPAIGNS, {
             headers: { Authorization: `Bearer ${token}` },
@@ -145,7 +145,7 @@ const ManageCampaigns = () => {
         setAllBoards(boardsData);
 
         const clientUsers = usersData.filter((user) => user.role === "client");
-        console.log('Filtered client users:', clientUsers);
+
         setClients(clientUsers);
 
         const usedBoardIds = campaignsData.flatMap((camp) =>
@@ -369,22 +369,22 @@ const ManageCampaigns = () => {
             const boardsUrl = `${import.meta.env.VITE_API_URL_GET_BOARDS_BY_CITY}/${encodeURIComponent(
               city
             )}`;
-            console.log('Fetching boards from:', boardsUrl);
+
             
             const res = await axios.get(boardsUrl, {
               headers: { Authorization: `Bearer ${token}` },
             });
 
-            console.log("Raw boards response:", res.data);
+
 
             const boardsData = Array.isArray(res.data)
               ? res.data
               : res.data?.boards || res.data?.data || [];
 
-            console.log("Processed boards data:", boardsData);
+
             
             if (boardsData.length === 0) {
-              console.log('No boards found for city:', city);
+
             }
 
             boardsData.forEach((board) => {
@@ -412,14 +412,14 @@ const ManageCampaigns = () => {
     const { name, value } = e.target;
     if (name === "selectedBoards" || name === "serviceManEmail") {
       const selected = Array.from(e.target.selectedOptions).map(opt => opt.value);
-      console.log(`${name} selected values:`, selected);
+
       setFormData(prev => ({ 
         ...prev, 
         [name]: selected,
         ...(name === "selectedBoards" && { noOfBoards: selected.length.toString() })
       }));
     } else {
-      console.log(`Setting ${name} to:`, value);
+
       setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
@@ -517,7 +517,7 @@ const ManageCampaigns = () => {
   };
 
   const handleEdit = (campaign) => {
-    console.log("Editing campaign:", campaign);
+
     let citiesFromCampaign = [];
     if (campaign.selectedBoards && campaign.selectedBoards.length > 0) {
       const uniqueCities = new Set();
@@ -526,7 +526,7 @@ const ManageCampaigns = () => {
         if (city) uniqueCities.add(city);
       });
       citiesFromCampaign = Array.from(uniqueCities);
-      console.log("Cities from campaign:", citiesFromCampaign);
+
     }
 
     setEditId(campaign._id);
@@ -655,9 +655,9 @@ const ManageCampaigns = () => {
       !isNaN(parseFloat(b.Longitude))
     );
     
-    console.log('Original selected:', campaign.selectedBoards);
-    console.log('Normalized boards:', normalizedBoards);
-    console.log('Boards to display on map:', boardsToDisplay);
+
+
+
 
     if (boardsToDisplay.length === 0) {
        // If mostly IDs or invalid objects, we might want to warn or try to fetch?
@@ -668,6 +668,67 @@ const ManageCampaigns = () => {
 
     setMapBoards(boardsToDisplay);
     setShowMapModal(true);
+  };
+
+  const handleSendReport = async (campaign) => {
+    if (!campaign.clientEmail) {
+      toast.error("This campaign does not have a client email assigned.");
+      return;
+    }
+
+    const toastId = toast.loading("Fetching data for report...");
+    try {
+      // 1. Fetch images
+      const imgRes = await axios.get(
+        `${import.meta.env.VITE_API_URL}/admin/campaign-images/${campaign._id}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+
+      const { data, success } = imgRes.data;
+      if (!success || !Array.isArray(data) || data.length === 0) {
+        toast.update(toastId, { render: "No images found for this campaign.", type: "warning", isLoading: false, autoClose: 3000 });
+        return;
+      }
+      
+      const processedImages = data.map(img => ({
+          ...img,
+          imageUrl: img.imageUrl || img.url || img.path || img.image || '',
+      })).filter(img => img.imageUrl);
+
+      if (processedImages.length === 0) {
+         toast.update(toastId, { render: "No valid images to generate report.", type: "warning", isLoading: false, autoClose: 3000 });
+         return;
+      }
+
+      // 2. Generate PPT
+      toast.update(toastId, { render: "Generating PowerPoint report..." });
+      
+      // Dynamic import to avoid top-level issues if any
+      const { generateCampaignPPT } = await import("../../../utils/pptGenerator");
+      const pptBlob = await generateCampaignPPT(campaign, processedImages);
+
+      // 3. Send to Backend
+      toast.update(toastId, { render: "Sending email to client..." });
+      
+      const formData = new FormData();
+      formData.append("file", pptBlob, `${campaign.name.replace(/\s+/g, '_')}_Report.pptx`);
+      formData.append("clientEmail", campaign.clientEmail);
+      formData.append("campaignName", campaign.name);
+      
+      await axios.post(`${import.meta.env.VITE_API_URL}/send-report`, formData, {
+          headers: { 
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "multipart/form-data" 
+          }
+      });
+
+      toast.update(toastId, { render: `Report sent successfully to ${campaign.clientEmail}`, type: "success", isLoading: false, autoClose: 5000 });
+
+    } catch (error) {
+      console.error("Send report error:", error);
+      const msg = error.response?.data?.message || error.message || "Failed to send report";
+      toast.update(toastId, { render: msg, type: "error", isLoading: false, autoClose: 5000 });
+    }
   };
 
   return (
@@ -965,6 +1026,15 @@ const ManageCampaigns = () => {
                   </svg>
                   View on Map
                 </button>
+                {/* <button
+                  onClick={() => handleSendReport(campaign)}
+                  className="inline-flex items-center gap-2 bg-gradient-to-r from-teal-500 to-teal-600 text-white px-4 py-2 rounded-lg hover:from-teal-600 hover:to-teal-700 transition-all duration-200 shadow-md hover:shadow-lg font-medium text-sm"
+                >
+                   <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  </svg>
+                  Send Report
+                </button> */}
               </div>
             </div>
               );
