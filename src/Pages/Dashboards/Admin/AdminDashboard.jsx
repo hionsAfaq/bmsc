@@ -207,7 +207,7 @@ const AdminDashboard = () => {
                     <p className="text-xs text-gray-400 mt-2">{((clientCount / users.length) * 100).toFixed(1)}% of users</p>
                   </div>
                   <div className="bg-white p-6 rounded-lg shadow-md border border-green-100">
-                    <p className="text-sm text-gray-500 mb-1">Service Personnel</p>
+                    <p className="text-sm text-gray-500 mb-1">Trackers</p>
                     <p className="text-3xl font-bold text-green-600">{servicemanCount}</p>
                     <p className="text-xs text-gray-400 mt-2">{((servicemanCount / users.length) * 100).toFixed(1)}% of users</p>
                   </div>
@@ -217,7 +217,7 @@ const AdminDashboard = () => {
                     <p className="text-xs text-gray-400 mt-2">{((managerCount / users.length) * 100).toFixed(1)}% of users</p>
                   </div>
                   <div className="bg-white p-6 rounded-lg shadow-md border border-yellow-100">
-                    <p className="text-sm text-gray-500 mb-1">Administrators</p>
+                    <p className="text-sm text-gray-500 mb-1">Admin</p>
                     <p className="text-3xl font-bold text-yellow-600">{adminCount}</p>
                     <p className="text-xs text-gray-400 mt-2">{((adminCount / users.length) * 100).toFixed(1)}% of users</p>
                   </div>

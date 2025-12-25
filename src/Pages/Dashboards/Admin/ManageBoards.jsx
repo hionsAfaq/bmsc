@@ -7,14 +7,62 @@ import "react-toastify/dist/ReactToastify.css";
 
 // Predefined list of Pakistani cities for selection
 const CITY_OPTIONS = [
-  "Lahore",
-  "Islamabad",
-  "Karachi",
+  "Abbottabad",
+  "Attock",
+  "Bahawalnagar",
+  "Bahawalpur",
+  "Chiniot",
+  "Dera Ghazi Khan",
+  "Dera Ismail Khan",
   "Faisalabad",
+  "Gujranwala",
+  "Gujrat",
+  "Gwadar",
+  "Hafizabad",
+  "Hyderabad",
+  "Islamabad",
+  "Jacobabad",
+  "Jhelum",
+  "Jhang",
+  "Karachi",
+  "Kasur",
+  "Khanewal",
+  "Khuzdar",
+  "Kohat",
+  "Lahore",
+  "Larkana",
+  "Layyah",
+  "Lodhran",
+  "Malakand",
+  "Mandi Bahauddin",
+  "Mansehra",
+  "Mardan",
+  "Mirpur",
+  "Mirpur Khas",
   "Multan",
-  "Rawalpindi",
+  "Muzaffarabad",
+  "Nawabshah",
+  "Okara",
   "Peshawar",
   "Quetta",
+  "Rahim Yar Khan",
+  "Rawalpindi",
+  "Sadiqabad",
+  "Sahiwal",
+  "Sargodha",
+  "Sheikhupura",
+  "Shikarpur",
+  "Sialkot",
+  "Sukkur",
+  "Swabi",
+  "Swat",
+  "Tando Adam",
+  "Tando Allahyar",
+  "Taxila",
+  "Turbat",
+  "Vehari",
+  "Wazirabad",
+  "Zhob",
 ];
 
 const ManageBoards = () => {
@@ -35,6 +83,7 @@ const ManageBoards = () => {
     Longitude: "",
     Height: "",
     Width: "",
+    Quantity: "",
   });
 
   const [loading, setLoading] = useState(true);
@@ -143,11 +192,29 @@ const ManageBoards = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const payload = { ...formData };
+    
+    // Handle Quantity: Set to null if empty or if type doesn't use it
+    if (!payload.Quantity || !['creative', 'digital stream', 'screen digital', 'mall digital screen'].includes(payload.Type)) {
+        payload.Quantity = null;
+    }
+
+    // Ensure numeric fields are numbers
+    payload.Height = Number(payload.Height);
+    payload.Width = Number(payload.Width);
+    payload.Latitude = Number(payload.Latitude);
+    payload.Longitude = Number(payload.Longitude);
+
+    if (isNaN(payload.Height) || isNaN(payload.Width) || isNaN(payload.Latitude) || isNaN(payload.Longitude)) {
+        toast.error("Please enter valid numbers for Height, Width, Latitude, and Longitude.");
+        return;
+    }
+
     try {
       if (isEditing) {
         await axios.put(
           `${import.meta.env.VITE_API_URL_UPDATE_BOARD}/${editId}`,
-          formData,
+          payload,
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -156,7 +223,7 @@ const ManageBoards = () => {
         );
         toast.success("Board updated successfully");
       } else {
-        await axios.post(import.meta.env.VITE_API_URL_CREATE_BOARD, formData, {
+        await axios.post(import.meta.env.VITE_API_URL_CREATE_BOARD, payload, {
           headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
         });
         toast.success("Board added successfully");
@@ -171,6 +238,7 @@ const ManageBoards = () => {
         Longitude: "",
         Height: "",
         Width: "",
+        Quantity: "",
       });
       setIsEditing(false);
       setEditId(null);
@@ -178,10 +246,20 @@ const ManageBoards = () => {
       fetchBoards();
     } catch (err) {
       console.error("Error saving board:", err);
-      if (err.response?.data?.message?.toLowerCase().includes("boardno")) {
-        toast.error("Board with this BoardNo already exists.");
+      
+      const responseData = err.response?.data;
+      const errorMessage = responseData?.message || "Failed to save board.";
+      
+      // Check if it's a duplicate key error (MongoDB code 11000)
+      if (responseData?.error?.code === 11000) {
+        const field = Object.keys(responseData.error.keyPattern || {})[0];
+        if (field) {
+            toast.error(`Duplicate value entered for ${field}. Please use a unique value.`);
+        } else {
+            toast.error(errorMessage);
+        }
       } else {
-        toast.error("Failed to save board.");
+        toast.error(errorMessage);
       }
     }
   };
@@ -196,6 +274,7 @@ const ManageBoards = () => {
       Longitude: board.Longitude,
       Height: board.Height,
       Width: board.Width,
+      Quantity: board.Quantity || "",
     });
     setIsEditing(true);
     setEditId(board._id);
@@ -244,6 +323,7 @@ const ManageBoards = () => {
                   Longitude: "",
                   Height: "",
                   Width: "",
+                  Quantity: "",
                 });
                 toggleDialog();
                 getGeoLocation(); // ⬅️ trigger geo auto-fill
@@ -276,7 +356,7 @@ const ManageBoards = () => {
                   ].map((field) => (
                     <div key={field}>
                       <label className="block text-sm font-medium mb-1">
-                        {field}
+                        {field === "BoardNo" ? "Board" : field}
                       </label>
                       {field === "Type" ? (
                         <select
@@ -288,6 +368,10 @@ const ManageBoards = () => {
                         >
                           <option value="backlit">Backlit</option>
                           <option value="frontlit">Frontlit</option>
+                          <option value="creative">Creative</option>
+                          <option value="digital stream">Digital Stream</option>
+                          <option value="screen digital">Screen Digital</option>
+                          <option value="mall digital screen">Mall Digital Screen</option>
                         </select>
                       ) : field === "City" ? (
                         <select
@@ -326,6 +410,24 @@ const ManageBoards = () => {
                       )}
                     </div>
                   ))}
+                  
+                  {/* Conditional Quantity Field - only for digital board types */}
+                  {['creative', 'digital stream', 'screen digital', 'mall digital screen'].includes(formData.Type) && (
+                    <div>
+                      <label className="block text-sm font-medium mb-1">
+                        Quantity
+                      </label>
+                      <input
+                        type="number"
+                        name="Quantity"
+                        value={formData.Quantity}
+                        onChange={handleChange}
+                        className="w-full p-2 border rounded"
+                        min="1"
+                        required
+                      />
+                    </div>
+                  )}
                   <div className="flex justify-end gap-3 pt-4">
                     <button
                       type="button"
@@ -407,7 +509,7 @@ const ManageBoards = () => {
                       </span>
                     </div>
                     <p className="text-sm text-gray-700">
-                      <strong>Board No:</strong> {board.BoardNo}
+                      <strong>Board:</strong> {board.BoardNo}
                     </p>
                     <p className="text-sm text-gray-700">
                       <strong>Location:</strong> {board.Location}
@@ -420,8 +522,13 @@ const ManageBoards = () => {
                     </p>
                     
                     <p className="text-sm text-gray-700">
-                      <strong>Size:</strong> {board.Height}m x {board.Width}m
+                      <strong>Size:</strong> {board.Width}ft x {board.Height}ft
                     </p>
+                    {board.Quantity && (
+                      <p className="text-sm font-medium text-blue-700 mt-1">
+                        <strong>Quantity:</strong> {board.Quantity}
+                      </p>
+                    )}
                     <button
                       className="mt-2 px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700 text-sm"
                       onClick={() => {

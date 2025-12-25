@@ -138,7 +138,7 @@ const VerifiedCampaigns = () => {
       <div className="mb-6">
         <input
           type="text"
-          placeholder="Search by campaign, location, city, or service man..."
+          placeholder="Search by campaign, location, city, or tracker..."
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           className="w-full sm:w-1/2 px-4 py-2 border rounded-lg shadow focus:outline-none focus:ring-2 focus:ring-green-300"
@@ -246,7 +246,7 @@ const VerifiedCampaigns = () => {
                         <p><strong>Board Location:</strong> {verification.board?.Location || "N/A"}</p>
                         <p><strong>City:</strong> {verification.board?.City || "N/A"}</p>
                         <p><strong>Board Size:</strong> {verification.board?.Size || "N/A"}</p>
-                        <p><strong>Service Man:</strong> {verification.serviceMan?.email || "N/A"}</p>
+                        <p><strong>Tracker:</strong> {verification.serviceMan?.email || "N/A"}</p>
                         <p><strong>Verified At:</strong> {formatDateTime(verification.verifiedAt)}</p>
                         {verification.distanceInMeters && (
                           <p><strong>Distance:</strong> {verification.distanceInMeters}m from board</p>
