@@ -6,12 +6,62 @@ import "react-toastify/dist/ReactToastify.css";
 
 // Predefined list of cities for selection
 const CITY_OPTIONS = [
-  "Lahore",
-  "Islamabad",
-  "Karachi",
+  "Abbottabad",
+  "Attock",
+  "Bahawalnagar",
+  "Bahawalpur",
+  "Chiniot",
+  "Dera Ghazi Khan",
+  "Dera Ismail Khan",
   "Faisalabad",
+  "Gujranwala",
+  "Gujrat",
+  "Gwadar",
+  "Hafizabad",
+  "Hyderabad",
+  "Islamabad",
+  "Jacobabad",
+  "Jhelum",
+  "Jhang",
+  "Karachi",
+  "Kasur",
+  "Khanewal",
+  "Khuzdar",
+  "Kohat",
+  "Lahore",
+  "Larkana",
+  "Layyah",
+  "Lodhran",
+  "Malakand",
+  "Mandi Bahauddin",
+  "Mansehra",
+  "Mardan",
+  "Mirpur",
+  "Mirpur Khas",
   "Multan",
+  "Muzaffarabad",
+  "Nawabshah",
+  "Okara",
+  "Peshawar",
+  "Quetta",
+  "Rahim Yar Khan",
   "Rawalpindi",
+  "Sadiqabad",
+  "Sahiwal",
+  "Sargodha",
+  "Sheikhupura",
+  "Shikarpur",
+  "Sialkot",
+  "Sukkur",
+  "Swabi",
+  "Swat",
+  "Tando Adam",
+  "Tando Allahyar",
+  "Taxila",
+  "Turbat",
+  "Vehari",
+  "Wazirabad",
+  "Zhob",
 ];
 
 const ManageUsers = () => {
@@ -199,7 +249,7 @@ const ManageUsers = () => {
     const filtered = users.filter((u) => u.role === role);
     return (
       <div key={role} className="mb-12">
-        <h3 className="text-xl font-bold mb-4 capitalize">{role}s</h3>
+        <h3 className="text-xl font-bold mb-4 capitalize">{role === 'serviceman' ? 'Trackers' : role + 's'}</h3>
         <div className="overflow-x-auto bg-white shadow-lg rounded-xl border border-gray-200">
           <table className="min-w-full text-sm">
             <thead className="bg-[#2563eb] text-white">
@@ -221,7 +271,7 @@ const ManageUsers = () => {
                   <td className="py-3 px-4">{user.phone}</td>
                   <td className="py-3 px-4">{user.address}</td>
                   <td className="py-3 px-4">{user.city}</td>
-                  <td className="py-3 px-4">{user.role}</td>
+                  <td className="py-3 px-4">{user.role === 'serviceman' ? 'Tracker' : user.role}</td>
                   <td className="py-3 px-4 space-x-2">
                     <button
                       className="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600"
@@ -241,7 +291,7 @@ const ManageUsers = () => {
               {filtered.length === 0 && (
                 <tr>
                   <td colSpan="7" className="text-center py-3 text-gray-500">
-                    No {role}s found.
+                    No {role === 'serviceman' ? 'trackers' : role + 's'} found.
                   </td>
                 </tr>
               )}
@@ -349,7 +399,7 @@ const ManageUsers = () => {
               />
             </div>
             <div>
-              <label htmlFor="">Select Role::</label>
+              <label htmlFor="">Select Role:</label>
               <br />
               <br />
               <select
