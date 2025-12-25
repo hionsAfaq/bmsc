@@ -42,12 +42,12 @@ const Footer = () => {
           <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
           <ul className="text-sm space-y-2">
             <li>
-              Email: <a href="mailto:support@campaignsoft.com" className="hover:text-yellow-300 transition duration-300">support@campaignsoft.com</a>
+              Email: <a href="mailto:m.afaqpak@gmail.com" className="hover:text-yellow-300 transition duration-300">m.afaqpak@gmail.com</a>
             </li>
             <li>
-              Phone: <a href="tel:+923001234567" className="hover:text-yellow-300 transition duration-300">+92 300 1234567</a>
+              Phone: <a href="tel:+923097876497" className="hover:text-yellow-300 transition duration-300">+92 309 7876497</a>
             </li>
-            <li>Location: Karachi, Pakistan</li>
+            <li>Location: Lahore | Karachi, Pakistan</li>
           </ul>
         </div>
 
